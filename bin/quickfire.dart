@@ -1,5 +1,15 @@
-import 'package:quickfire/quickfire.dart' as quickfire;
+import 'package:args/command_runner.dart';
+import 'package:quickfire/commands/create_project.dart';
 
-void main(List<String> arguments) {
-  print('Hello world: ${quickfire.calculate()}!');
+
+Future<void> main(List<String> args) async {
+  final CommandRunner<void> runner =
+      CommandRunner<void>('quickfire', 'Flutter on steroids')
+        ..addCommand(CreateProject());
+
+  try {
+    await runner.run(args);
+  } catch (e) {
+    print('Error: $e');
+  }
 }
