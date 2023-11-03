@@ -120,7 +120,9 @@ class CreateProject extends Command {
     }
 
     // Creating UI files
-        for (String feature in featuresArray) {
+    for (String feature in featuresArray) {
+      String featureName = feature[0].toUpperCase() + feature.substring(1);
+
       final Directory uiFolder = Directory('lib/features/$feature/ui');
 
       if (uiFolder.existsSync()) {
@@ -135,14 +137,14 @@ class CreateProject extends Command {
           screenFile.writeAsStringSync('''
 import 'package:flutter/material.dart';
 
-class ${feature}Screen extends StatelessWidget {
-  const ${feature}Screen({super.key});
+class ${featureName}Screen extends StatelessWidget {
+  const ${featureName}Screen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: Text('${feature}Screen '),
+        child: Text('${featureName}Screen '),
       ),
     );
   }
@@ -152,6 +154,7 @@ class ${feature}Screen extends StatelessWidget {
         }
       }
     }
-  }
 
+    // y
+  }
 }
