@@ -1,5 +1,5 @@
 import 'package:args/command_runner.dart';
-import 'package:quickfire/commands/create_project.dart';
+import 'package:quickfire/commands/create_project/create_project.dart';
 
 
 Future<void> main(List<String> args) async {
