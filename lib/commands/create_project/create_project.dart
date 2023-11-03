@@ -34,6 +34,7 @@ class CreateProject extends Command {
     if (result.exitCode == 0) {
       print('Flutter project $projectName created successfully');
     } else {
+      print(result.exitCode);
       print(
           'Error creating Flutter project. Check the Flutter installation and try again.');
       print(result.stderr);
@@ -117,5 +118,40 @@ class CreateProject extends Command {
       repoFolder.createSync();
       widgetsFolder.createSync();
     }
+
+    // Creating UI files
+        for (String feature in featuresArray) {
+      final Directory uiFolder = Directory('lib/features/$feature/ui');
+
+      if (uiFolder.existsSync()) {
+        final File screenFile =
+            File('lib/features/$feature/ui/${feature}_screen.dart');
+
+        if (!screenFile.existsSync()) {
+          // create a new dart file
+          screenFile.createSync();
+
+          // write the basic content to the dart file.
+          screenFile.writeAsStringSync('''
+import 'package:flutter/material.dart';
+
+class ${feature}Screen extends StatelessWidget {
+  const ${feature}Screen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: Text('${feature}Screen '),
+      ),
+    );
   }
+}
+
+''');
+        }
+      }
+    }
+  }
+
 }
