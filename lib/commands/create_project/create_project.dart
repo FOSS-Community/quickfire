@@ -155,6 +155,80 @@ class ${featureName}Screen extends StatelessWidget {
       }
     }
 
-    // y
+    // Import bloc and flutter_bloc to pubspec.yaml
+    // Directory.current = projectDirectory.path;
+    final ProcessResult addPackagesResult = await Process.run(
+      'dart',
+      ['pub', 'add', 'bloc', 'flutter_bloc'],
+    );
+    if (addPackagesResult.exitCode != 0) {
+      print(
+          'Error adding packages. Check your internet connection and try again.');
+      print(addPackagesResult.stderr);
+      return;
+    }
+    print('added bloc dependency to project');
+
+    // Go inside every feature bloc folder ]
+    for (String feature in featuresArray) {
+      String featureName = feature[0].toUpperCase() + feature.substring(1);
+      final Directory blocFolder = Directory('lib/features/$feature/bloc');
+      if (blocFolder.existsSync()) {
+        final File blocFile =
+            File('lib/features/$feature/bloc/${feature}_bloc.dart');
+        final File eventFile =
+            File('lib/features/$feature/bloc/${feature}_event.dart');
+        final File stateFile =
+            File('lib/features/$feature/bloc/${feature}_state.dart');
+
+        // write bloc file
+        if (!blocFile.existsSync()) {
+          blocFile.createSync();
+          blocFile.writeAsStringSync('''
+import 'package:bloc/bloc.dart';
+import 'package:meta/meta.dart';
+
+part '${feature}_event.dart';
+part '${feature}_state.dart';
+
+class ${featureName}Bloc extends Bloc<${featureName}Event, ${featureName}State> {
+  ${featureName}Bloc() : super(${featureName}Initial()) {
+    on<${featureName}Event>((event, emit) {
+      // TODO: implement event handler
+    });
+  }
+}
+
+''');
+        }
+
+        // write event file
+        if (!eventFile.existsSync()) {
+          eventFile.createSync();
+          eventFile.writeAsStringSync('''
+part of '${feature}_bloc.dart';
+
+@immutable
+sealed class ${featureName}Event {}
+
+''');
+        }
+
+        // write state file
+        if (!stateFile.existsSync()) {
+          stateFile.createSync();
+          stateFile.writeAsStringSync('''
+part of '${feature}_bloc.dart';
+
+@immutable
+sealed class ${featureName}State {}
+
+final class ${featureName}Initial extends ${featureName}State {}
+
+
+''');
+        }
+      }
+    }
   }
 }
