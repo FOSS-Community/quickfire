@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 class CommandHandler {
   static Future<void> createFeatureFirstArchitecture(String projectName) async {
@@ -188,18 +189,17 @@ final class ${featureName}Initial extends ${featureName}State {}
         break;
     }
   }
-  
 
   static Future<void> createOnBoarding(String projectName) async {
     // Import shared pref and riverpod
     final ProcessResult addSharedPrefResult = await Process.run(
       'dart',
-      ['pub', 'add', 'bloc', 'shared_preferences'],
+      ['pub', 'add', 'shared_preferences'],
     );
 
     final ProcessResult addRiverpodResult = await Process.run(
       'dart',
-      ['pub', 'add', 'bloc', 'flutter_riverpod'],
+      ['pub', 'add', 'flutter_riverpod'],
     );
 
     if (addSharedPrefResult.exitCode != 0) {
@@ -232,10 +232,10 @@ final class ${featureName}Initial extends ${featureName}State {}
     if (!onBoardinScreenFile.existsSync()) {
       onBoardinScreenFile.createSync();
       onBoardinScreenFile.writeAsStringSync('''
-import 'package:awaaz/features/home/ui/home_screen.dart';
-import 'package:awaaz/features/on_boarding/ui/intro_page2.dart';
-import 'package:awaaz/features/on_boarding/ui/intro_page3.dart';
-import 'package:awaaz/features/on_boarding/ui/intro_page1.dart';
+import 'package:$projectName/features/home/ui/home_screen.dart';
+import 'package:$projectName/features/onBoarding/ui/intro_page2.dart';
+import 'package:$projectName/features/onBoarding/ui/intro_page3.dart';
+import 'package:$projectName/features/onBoarding/ui/intro_page1.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -381,5 +381,180 @@ class IntroPage3 extends StatelessWidget {
 }
 ''');
     }
+  }
+
+  static Future<void> implementFirebase(String projectName) async {
+    // Import firebase core and firebase auth
+    final ProcessResult addFirebaseCore =
+        await Process.run('dart', ['pub', 'add', 'firebase_core']);
+    final ProcessResult addFirebaseAuth =
+        await Process.run('dart', ['pub', 'add', 'firebase_auth']);
+    final ProcessResult addGoogleSignIn =
+        await Process.run('dart', ['pub', 'add', 'google_sign_in']);
+
+    if (addFirebaseCore.exitCode != 0) {
+      print(
+          'Error adding packages. Check your internet connection and try again.');
+      print(addFirebaseCore.stderr);
+      return;
+    }
+    if (addFirebaseAuth.exitCode != 0) {
+      print(
+          'Error adding packages. Check your internet connection and try again.');
+      print(addFirebaseAuth.stderr);
+      return;
+    }
+    if (addGoogleSignIn.exitCode != 0) {
+      print(
+          'Error adding packages. Check your internet connection and try again.');
+      print(addGoogleSignIn.stderr);
+      return;
+    }
+
+    print('added firebase packages');
+
+    // Create a login page
+
+    // create lib/features/auth/ui
+    final authFolder = Directory('lib/features/auth');
+    authFolder.createSync();
+    final authUiFolder = Directory('lib/features/auth/ui');
+    authUiFolder.createSync();
+
+    // Create login page inside lib/features/auth/ui/login_page.dart
+    final File loginScreen = File('lib/features/auth/ui/login_page.dart');
+    if (!loginScreen.existsSync()) {
+      loginScreen.createSync();
+      loginScreen.writeAsStringSync('''
+import 'package:flutter/material.dart';
+import 'package:$projectName/features/auth/service/auth_service.dart';
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: TextButton(
+            onPressed: () {
+              AuthService().continueWithGoogle(context);
+            },
+            child: const Text('Continue with google!')),
+      ),
+    );
+  }
+}
+
+''');
+    }
+
+    final authServiceFolder = Directory('lib/features/auth/service');
+    authServiceFolder.createSync();
+
+    // create auth service inside lib/features/auth/service/auth_service.dart
+    final File authService =
+        File('lib/features/auth/service/auth_service.dart');
+    if (!authService.existsSync()) {
+      authService.createSync();
+      authService.writeAsStringSync('''
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:$projectName/features/home/ui/home_screen.dart';
+
+
+
+class AuthService {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  continueWithGoogle(BuildContext context) async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    if (googleUser != null) {
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Once signed in navigate to the home screen
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+      final User? user = userCredential.user;
+      if (user != null) {
+        // ignore: use_build_context_synchronously
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()));
+      }
+      return user;
+    } else {
+      // handle signin errors
+      return null;
+    }
+  }
+}
+
+''');
+    }
+
+    // change the content of main.dart
+    final File mainFile = File('lib/main.dart');
+    mainFile.writeAsStringSync('''
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:$projectName/firebase_options.dart';
+import 'package:$projectName/features/home/ui/home_screen.dart';
+import 'package:$projectName/features/auth/ui/login_page.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          if (snapshot.connectionState == ConnectionState.active) {
+            if (snapshot.data == null) {
+              return const LoginPage();
+            } else {
+              return const HomeScreen();
+            }
+          }
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      ),
+    );
+  }
+}
+
+''');
+
+    print('Created Firebase Authentication');
   }
 }
