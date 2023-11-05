@@ -74,7 +74,36 @@ class CreateProject extends Command {
         print('Creating a Layer first architecture for $projectName ....');
         break;
     }
+
+    print('Do you want firebase authentication? (y/n)');
+    String firebaseChoice;
+    do {
+      stdout.write('Chose your choice "');
+      final String firebaseInput = stdin.readLineSync() ?? '';
+      firebaseChoice = firebaseInput;
+    } while (firebaseChoice != 'y' &&
+        firebaseChoice != 'n' &&
+        firebaseChoice != 'Y' &&
+        firebaseChoice != 'N');
+
+    // Handle user choice
+    switch (firebaseChoice) {
+      case 'y':
+        print(
+            'Implementing Firebase Auth and Login screen for $projectName ....');
+        await CommandHandler.implementFirebase(projectName);
+
+        break;
+      case 'Y':
+        print(
+            'Implementing Firebase Auth and Login screen for$projectName ....');
+        await CommandHandler.implementFirebase(projectName);
+
+        break;
+      case 'n':
+        break;
+      case 'N':
+        break;
+    }
   }
-
-
 }
