@@ -232,7 +232,7 @@ final class ${featureName}Initial extends ${featureName}State {}
     if (!onBoardinScreenFile.existsSync()) {
       onBoardinScreenFile.createSync();
       onBoardinScreenFile.writeAsStringSync('''
-import 'package:$projectName/features/home/ui/home_screen.dart';
+import 'package:$projectName/features/auth/ui/login_page.dart';
 import 'package:$projectName/features/onBoarding/ui/intro_page2.dart';
 import 'package:$projectName/features/onBoarding/ui/intro_page3.dart';
 import 'package:$projectName/features/onBoarding/ui/intro_page1.dart';
@@ -258,7 +258,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => const HomeScreen())); // PageViewHome()
+            builder: (context) => const LoginPage())); // PageViewHome()
   }
 
   @override
@@ -507,21 +507,27 @@ class AuthService {
     mainFile.writeAsStringSync('''
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:$projectName/firebase_options.dart';
 import 'package:$projectName/features/home/ui/home_screen.dart';
 import 'package:$projectName/features/auth/ui/login_page.dart';
+import 'package:$projectName/features/onBoarding/ui/on_boarding_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
+  runApp(ProviderScope(child: MyApp(hasSeenOnboarding: hasSeenOnboarding)));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool hasSeenOnboarding;
+  const MyApp({required this.hasSeenOnboarding, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -531,7 +537,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: StreamBuilder<User?>(
+      home: !hasSeenOnboarding ? const OnBoardingScreen(): StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasError) {
