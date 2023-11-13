@@ -75,29 +75,44 @@ class CreateProject extends Command {
         break;
     }
 
-    print('Do you want firebase authentication? (y/n)');
+    print(
+        'Choose between Firebase or Appwrite authentication (f/a) or "n" for no authentication service.');
     String firebaseChoice;
     do {
       stdout.write('Chose your choice "');
       final String firebaseInput = stdin.readLineSync() ?? '';
       firebaseChoice = firebaseInput;
-    } while (firebaseChoice != 'y' &&
+    } while (firebaseChoice != 'f' &&
+        firebaseChoice != 'a' &&
+        firebaseChoice != 'F' &&
+        firebaseChoice != 'A' &&
         firebaseChoice != 'n' &&
-        firebaseChoice != 'Y' &&
         firebaseChoice != 'N');
 
     // Handle user choice
     switch (firebaseChoice) {
-      case 'y':
+      case 'f':
         print(
             'Implementing Firebase Auth and Login screen for $projectName ....');
         await CommandHandler.implementFirebase(projectName);
 
         break;
-      case 'Y':
+      case 'F':
         print(
             'Implementing Firebase Auth and Login screen for$projectName ....');
         await CommandHandler.implementFirebase(projectName);
+
+        break;
+      case 'a':
+        print(
+            'Implementing Appwrite Auth and Login screen for$projectName ....');
+        await CommandHandler.implementAppwrite(projectName);
+
+        break;
+      case 'A':
+        print(
+            'Implementing Appwrite Auth and Login screen for$projectName ....');
+        await CommandHandler.implementAppwrite(projectName);
 
         break;
       case 'n':
