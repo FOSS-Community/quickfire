@@ -60,11 +60,13 @@ class CreateProject extends Command {
       case 'y':
         print('Creating a feature first architecture for $projectName ....');
         await CommandHandler.createFeatureFirstArchitecture(projectName);
+        await CommandHandler.createConstants(projectName);
 
         break;
       case 'Y':
         print('Creating a feature first architecture for $projectName ....');
         await CommandHandler.createFeatureFirstArchitecture(projectName);
+        await CommandHandler.createConstants(projectName);
 
         break;
       case 'n':

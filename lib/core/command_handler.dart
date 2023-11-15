@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 class CommandHandler {
   static Future<void> createFeatureFirstArchitecture(String projectName) async {
@@ -1103,5 +1102,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
 }
 
 ''');
+  }
+
+  static Future<void> createConstants(String projectName) async {
+    final constantsFolder = Directory('lib/constants');
+    constantsFolder.createSync();
+
+    final File dimensionsFile = File('lib/constants/dimensions.dart');
+    if (!dimensionsFile.existsSync()) {
+      dimensionsFile.createSync();
+      dimensionsFile.writeAsStringSync('''
+import 'package:flutter/widgets.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+double getScreenWidth(BuildContext context) {
+  return MediaQuery.of(context).size.width;
+}
+
+double getScreenheight(BuildContext context) {
+  return MediaQuery.of(context).size.height;
+}
+
+''');
+    }
   }
 }
