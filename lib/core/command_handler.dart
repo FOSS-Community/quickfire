@@ -83,6 +83,89 @@ class ${featureName}Screen extends StatelessWidget {
       }
     }
 
+    // create navigation bar.....
+
+    // create shared folder
+    final sharedFolder = Directory('lib/shared');
+    sharedFolder.createSync();
+
+    final File navbar = File('lib/shared/nav_bar.dart');
+    if (!navbar.existsSync()) {
+      navbar.createSync();
+      navbar.writeAsStringSync('''
+import 'package:flutter/material.dart';
+''', mode: FileMode.append);
+
+      for (var feature in featuresArray) {
+        navbar.writeAsStringSync(
+          "import 'package:$projectName/features/$feature/ui/${feature}_screen.dart';\n",
+          mode: FileMode.append,
+        );
+      }
+      navbar.writeAsStringSync('''
+class NavigationScreen extends StatefulWidget {
+  const NavigationScreen({super.key});
+
+  @override
+  State<NavigationScreen> createState() => _NavigationScreenState();
+}
+
+class _NavigationScreenState extends State<NavigationScreen> {
+  int _selectedTab = 0;
+
+  _changeTab(int index) {
+    setState(() {
+      _selectedTab = index;
+    });
+  }
+
+  List _pages = [
+
+''', mode: FileMode.append);
+    }
+
+    for (String feature in featuresArray) {
+      // make the first letter of feature capital
+      String cFeature = feature[0].toUpperCase() + feature.substring(1);
+      navbar.writeAsStringSync(
+        "${cFeature}Screen(),\n",
+        mode: FileMode.append,
+      );
+    }
+    navbar.writeAsStringSync(
+      '];',
+      mode: FileMode.append,
+    );
+    navbar.writeAsStringSync(
+      '''
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_selectedTab],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedTab,
+        onTap: (index) {
+          _changeTab(index);
+        },
+        items: const [
+''',
+      mode: FileMode.append,
+    );
+
+    for (var feature in featuresArray) {
+      navbar.writeAsStringSync(
+        "BottomNavigationBarItem(icon: Icon(Icons.home), label: '$feature'),\n",
+        mode: FileMode.append,
+      );
+    }
+    navbar.writeAsStringSync('''
+        ],
+      ),
+    );
+  }
+}
+''', mode: FileMode.append);
+
     // Import bloc and flutter_bloc to pubspec.yaml
     // Directory.current = projectDirectory.path;
     final ProcessResult addPackagesResult = await Process.run(
@@ -488,7 +571,7 @@ class AuthService {
       if (user != null) {
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()));
+            MaterialPageRoute(builder: (context) => const NavigationScreen()));
       }
       return user;
     } else {
@@ -546,7 +629,7 @@ class MyApp extends StatelessWidget {
             if (snapshot.data == null) {
               return const LogInScreen();
             } else {
-              return const HomeScreen();
+              return const NavigationScreen();
             }
           }
           return const Center(
@@ -776,10 +859,12 @@ import 'package:flutter/material.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:$projectName/features/auth/service/auth_status.dart';
 import 'package:$projectName/features/auth/ui/auth_screen.dart';
-import 'package:$projectName/features/home/ui/home_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:$projectName/features/onBoarding/ui/on_boarding_screen.dart';
+import 'package:$projectName/shared/nav_bar.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Client client = Client();
   client = Client()
@@ -819,7 +904,7 @@ class MyApp extends StatelessWidget {
                   body: Center(child: CircularProgressIndicator()),
                 )
               : value == AuthStatus.authenticated
-                  ? const HomeScreen()
+                  ? const NavigationScreen()
                   : const AuthScreen(),
     );
   }
@@ -906,7 +991,7 @@ import 'package:flutter/material.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:$projectName/features/auth/service/auth_status.dart'; // service/auth_status.dart
 import 'package:provider/provider.dart'; 
-import 'package:$projectName/features/home/ui/home_screen.dart';
+import 'package:$projectName/shared/nav_bar.dart';
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({super.key});
@@ -945,7 +1030,7 @@ class _LogInScreenState extends State<LogInScreen> {
       );
       Navigator.pop(context);
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+          context, MaterialPageRoute(builder: (context) => const NavigationScreen()));
     } on AppwriteException catch (e) {
       Navigator.pop(context);
       showAlert(title: 'Login failed', text: e.message.toString());
@@ -1006,7 +1091,7 @@ class _LogInScreenState extends State<LogInScreen> {
 import 'package:flutter/material.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:provider/provider.dart';
-import 'package:$projectName/features/home/ui/home_screen.dart';
+import 'package:$projectName/shared/nav_bar.dart';
 import 'package:$projectName/features/auth/service/auth_status.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -1047,7 +1132,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       Navigator.pushReplacement(
         context,
         (MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
+          builder: (context) => const NavigationScreen(),
         )),
       );
     } on AppwriteException catch (e) {
