@@ -787,16 +787,21 @@ void main() {
       .setEndpoint("<YOUR_PROJECT_ENDPOINT>")
       .setProject("<YOUR_PROJECT_ID>");
   Account account = Account(client);
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool hasSeenOnboarding =
+      prefs.getBool('hasSeenOnboarding') ?? false;
   runApp(ChangeNotifierProvider(
     create: (context) => AuthService(),
-    child: MyApp(account: account),
+    child: MyApp(account: account, hasSeenOnboarding: hasSeenOnboarding,),
   ));
 }
 
 class MyApp extends StatelessWidget {
   final Account account;
+  final bool hasSeenOnboarding;
   const MyApp({
     required this.account,
+    required this.hasSeenOnboarding,
     super.key,
   });
 
@@ -808,13 +813,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: value == AuthStatus.uninitialized
-          ? const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            )
-          : value == AuthStatus.authenticated
-              ? const HomeScreen()
-              : const AuthScreen(),
+      home: !hasSeenOnboarding
+          ? const OnBoardingScreen()
+          : value == AuthStatus.uninitialized
+              ? const Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                )
+              : value == AuthStatus.authenticated
+                  ? const HomeScreen()
+                  : const AuthScreen(),
     );
   }
 }
