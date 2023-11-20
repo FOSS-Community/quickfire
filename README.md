@@ -9,27 +9,51 @@ Quickfire is a powerful Dart CLI tool that supercharges your Flutter project set
 1. **Installation:**
 
    ```bash
-   pub global activate quickfire
+   dart pub global activate quickfire
 
-### Project Customization
 
-Quickfire guides you through the setup process to tailor your Flutter project according to your preferences.
 
-- **Project Name:**
-  - Enter a unique name for your Flutter project.
+<p align="center">
+  <img src="https://i.postimg.cc/PxWqz4xD/1.png" width="100%">
+</p>
 
-- **State Management:**
-  - Choose between Bloc and Riverpod for efficient state management.
+<p align="center">
+  <img src="https://i.postimg.cc/85Q5631D/2.png" width="100%">
+</p>
 
-- **Authentication System:**
-  - Select your preferred authentication system:
-    - Firebase
-    - Appwrite
-    - Supabase
+<p align="center">
+  <img src="https://i.postimg.cc/dtqh6zGV/3.png" width="100%">
+</p>
 
-- **Onboarding Screen:**
-  - Decide whether you want to include an onboarding screen in your app.
+<p align="center">
+  <img src="https://i.postimg.cc/Gpst9rnq/4.png" width="100%">
+</p>
 
-- **CI/CD Integration:**
-  - Opt for Fastlane integration for seamless CI/CD.
+<p align="center">
+  <img src="https://i.postimg.cc/nhWMHrgX/5.png" width="100%">
+</p>
+
+<p align="center">
+  <img src="https://i.postimg.cc/htvfWTyF/6.png" width="100%">
+</p>
+
+<p align="center">
+  <img src="https://i.postimg.cc/sxzvtL8K/7.png" width="100%">
+</p>
+
+<p align="center">
+  <img src="https://i.postimg.cc/CLmzQm4H/8.png" width="100%">
+</p>
+
+<p align="center">
+  <img src="https://i.postimg.cc/QNgBpX9z/9.png" width="100%">
+</p>
+
+<p align="center">
+  <img src="https://i.postimg.cc/nr1CZkfx/10.png" width="100%">
+</p>
+
+<p align="center">
+  <img src="https://i.postimg.cc/zXjg1Jqh/11.png" width="100%">
+</p>
 
