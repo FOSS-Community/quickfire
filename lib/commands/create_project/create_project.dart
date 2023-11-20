@@ -1,7 +1,12 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
+import 'package:quickfire/core/auth_handler.dart';
 import 'package:quickfire/core/command_handler.dart';
+import 'package:quickfire/core/main_handler.dart';
+import 'package:quickfire/core/on_boarding_creation.dart';
 
 class CreateProject extends Command {
   // Command details
@@ -19,6 +24,8 @@ class CreateProject extends Command {
   // Handle Method
   @override
   Future<void> run() async {
+    String authOption = '';
+    late bool onBoardingOption;
     print('Enter the name of the project:');
     final String projectName = stdin.readLineSync() ?? '';
 
@@ -41,85 +48,128 @@ class CreateProject extends Command {
       print(result.stderr);
     }
 
-    // Ask for feature first approach?
-    print('Do you want a feature first approach ? (Y/n)');
+    print('Creating a feature first architecture for $projectName ...');
+    await CommandHandler.createFeatureFirstArchitecture(projectName);
+    await CommandHandler.createConstants(projectName);
 
-    // Get user choice for State management
-    String stateChoice;
+    // Ask for on boarding option
+    // // Create on boarding screens
+    String onBoardingChoice;
     do {
-      stdout.write('Chose your choice "');
+      stdout.write('Do you want an on-boarding feature? (Y/n) "');
       final String stateInput = stdin.readLineSync() ?? '';
-      stateChoice = stateInput;
-    } while (stateChoice != 'y' &&
-        stateChoice != 'n' &&
-        stateChoice != 'Y' &&
-        stateChoice != 'N');
+      onBoardingChoice = stateInput;
+    } while (onBoardingChoice != 'y' &&
+        onBoardingChoice != 'n' &&
+        onBoardingChoice != 'Y' &&
+        onBoardingChoice != 'N');
 
     // Handle user choice
-    switch (stateChoice) {
+    switch (onBoardingChoice) {
       case 'y':
-        print('Creating a feature first architecture for $projectName ....');
-        await CommandHandler.createFeatureFirstArchitecture(projectName);
-        await CommandHandler.createConstants(projectName);
+        onBoardingOption = true;
 
         break;
       case 'Y':
-        print('Creating a feature first architecture for $projectName ....');
-        await CommandHandler.createFeatureFirstArchitecture(projectName);
-        await CommandHandler.createConstants(projectName);
+        onBoardingOption = true;
 
         break;
       case 'n':
-        print('Creating a Layer first architecture for $projectName ....');
+        onBoardingOption = false;
         break;
       case 'N':
-        print('Creating a Layer first architecture for $projectName ....');
+        onBoardingOption = false;
         break;
     }
 
-    print(
-        'Choose between Firebase or Appwrite authentication (f/a) or "n" for no authentication service.');
-    String firebaseChoice;
+    print('''
+
+Choose F for Firebase
+
+Choose A for Appwrite
+
+Choose N for No Auth Service...
+
+''');
+    String authChoice;
     do {
       stdout.write('Chose your choice "');
-      final String firebaseInput = stdin.readLineSync() ?? '';
-      firebaseChoice = firebaseInput;
-    } while (firebaseChoice != 'f' &&
-        firebaseChoice != 'a' &&
-        firebaseChoice != 'F' &&
-        firebaseChoice != 'A' &&
-        firebaseChoice != 'n' &&
-        firebaseChoice != 'N');
+      final String authInput = stdin.readLineSync() ?? '';
+      authChoice = authInput;
+    } while (authChoice != 'f' &&
+        authChoice != 'a' &&
+        authChoice != 'F' &&
+        authChoice != 'A' &&
+        authChoice != 'n' &&
+        authChoice != 'N');
 
     // Handle user choice
-    switch (firebaseChoice) {
+    switch (authChoice) {
       case 'f':
         print(
             'Implementing Firebase Auth and Login screen for $projectName ....');
-        await CommandHandler.implementFirebase(projectName);
+        await AuthHandler.implementFirebase(projectName);
+        authOption = 'firebase';
+        if (onBoardingOption) {
+          await MainFileHandler.createFirebaseMainWithOnBoarding(projectName);
+          await OnBoarding.createOnBoardingWithAuth(projectName);
+        } else if (!onBoardingOption) {
+          await MainFileHandler.createFirebaseMainWithoutOnBoarding(
+              projectName);
+        }
 
         break;
       case 'F':
         print(
             'Implementing Firebase Auth and Login screen for$projectName ....');
-        await CommandHandler.implementFirebase(projectName);
+        await AuthHandler.implementFirebase(projectName);
+        authOption = 'firebase';
+        if (onBoardingOption) {
+          await MainFileHandler.createFirebaseMainWithOnBoarding(projectName);
+          await OnBoarding.createOnBoardingWithAuth(projectName);
+        } else if (!onBoardingOption) {
+          await MainFileHandler.createFirebaseMainWithoutOnBoarding(
+              projectName);
+        }
 
         break;
       case 'a':
         print(
             'Implementing Appwrite Auth and Login screen for$projectName ....');
-        await CommandHandler.implementAppwrite(projectName);
+        await AuthHandler.implementAppwrite(projectName);
+        authOption = 'appwrite';
+        if (onBoardingOption) {
+          await MainFileHandler.createAppwriteMainWithOnBoarding(projectName);
+          await OnBoarding.createOnBoardingWithAuth(projectName);
+        } else if (!onBoardingOption) {
+          await MainFileHandler.createAppwriteMainWithoutOnBoarding(
+              projectName);
+        }
 
         break;
       case 'A':
         print(
             'Implementing Appwrite Auth and Login screen for$projectName ....');
-        await CommandHandler.implementAppwrite(projectName);
+        await AuthHandler.implementAppwrite(projectName);
+        authOption = 'appwrite';
+        if (onBoardingOption) {
+          await MainFileHandler.createAppwriteMainWithOnBoarding(projectName);
+          await OnBoarding.createOnBoardingWithAuth(projectName);
+        } else if (!onBoardingOption) {
+          await MainFileHandler.createAppwriteMainWithoutOnBoarding(
+              projectName);
+        }
 
         break;
       case 'n':
+        // Create On boarding Screen without Auth Screen
+        OnBoarding.createOnBoardingWithoutAuth(projectName);
+        authOption = 'no';
+
         break;
       case 'N':
+        OnBoarding.createOnBoardingWithoutAuth(projectName);
+        authOption = 'no';
         break;
     }
   }
