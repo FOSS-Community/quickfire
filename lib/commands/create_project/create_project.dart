@@ -25,6 +25,7 @@ class CreateProject extends Command {
   @override
   Future<void> run() async {
     String authOption = '';
+    late bool stripeOption;
     late bool onBoardingOption;
     print('Enter the name of the project:');
     final String projectName = stdin.readLineSync() ?? '';
@@ -172,5 +173,7 @@ Choose N for No Auth Service...
         authOption = 'no';
         break;
     }
+
+    // Ask for Stripe Payment Integration...
   }
 }
