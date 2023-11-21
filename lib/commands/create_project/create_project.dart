@@ -6,6 +6,7 @@ import 'package:args/command_runner.dart';
 import 'package:quickfire/core/auth_handler.dart';
 import 'package:quickfire/core/command_handler.dart';
 import 'package:quickfire/core/main_handler.dart';
+import 'package:quickfire/core/notification_handler.dart';
 import 'package:quickfire/core/on_boarding_creation.dart';
 import 'package:quickfire/core/stripe_handler.dart';
 
@@ -173,6 +174,49 @@ Choose N for No Auth Service...
         OnBoarding.createOnBoardingWithoutAuth(projectName);
         authOption = 'no';
         break;
+    }
+
+    // Ask for FCM and local Notifications
+
+    if (authOption == 'firebase') {
+      String stripeChoice;
+      do {
+        stdout.write(
+            'Do you need Firebase Cloud Messaging with Local Notification (Y/N) ? (Y/n) "');
+        final String stripeOption = stdin.readLineSync() ?? '';
+        stripeChoice = stripeOption;
+      } while (stripeChoice != 'y' &&
+          stripeChoice != 'n' &&
+          stripeChoice != 'Y' &&
+          stripeChoice != 'N');
+
+      // Handle user choice
+      switch (stripeChoice) {
+        case 'y':
+          await NotificationHandler.implementFirebaseNotification(projectName);
+          if (onBoardingOption) {
+            await MainFileHandler.createNotificationSystemMainWithOnboarding(
+                projectName);
+          } else if (onBoardingOption) {
+            await MainFileHandler.createNotficationSystemMainWithoutOnboarding(
+                projectName);
+          }
+          break;
+        case 'Y':
+          await NotificationHandler.implementFirebaseNotification(projectName);
+          if (onBoardingOption) {
+            await MainFileHandler.createNotificationSystemMainWithOnboarding(
+                projectName);
+          } else if (onBoardingOption) {
+            await MainFileHandler.createNotficationSystemMainWithoutOnboarding(
+                projectName);
+          }
+          break;
+        case 'n':
+          break;
+        case 'N':
+          break;
+      }
     }
 
     // Ask for Stripe Payment Integration...
