@@ -7,6 +7,7 @@ import 'package:quickfire/core/auth_handler.dart';
 import 'package:quickfire/core/command_handler.dart';
 import 'package:quickfire/core/main_handler.dart';
 import 'package:quickfire/core/on_boarding_creation.dart';
+import 'package:quickfire/core/stripe_handler.dart';
 
 class CreateProject extends Command {
   // Command details
@@ -175,5 +176,29 @@ Choose N for No Auth Service...
     }
 
     // Ask for Stripe Payment Integration...
+    String stripeChoice;
+    do {
+      stdout.write('Do you need Strpe Payment Gateway? (Y/n) "');
+      final String stripeOption = stdin.readLineSync() ?? '';
+      stripeChoice = stripeOption;
+    } while (stripeChoice != 'y' &&
+        stripeChoice != 'n' &&
+        stripeChoice != 'Y' &&
+        stripeChoice != 'N');
+
+    // Handle user choice
+    switch (stripeChoice) {
+      case 'y':
+        await StripeHandler.implementStripe(projectName);
+
+        break;
+      case 'Y':
+        await StripeHandler.implementStripe(projectName);
+        break;
+      case 'n':
+        break;
+      case 'N':
+        break;
+    }
   }
 }
