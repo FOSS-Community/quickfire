@@ -1,7 +1,7 @@
 name: quickfire
-description: A sample command-line application.
+description: A powerful flutter CLI tool to generate bloc based feature driven development.
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/FOSS-Community/quickfire
 
 environment:
   sdk: ^3.1.5
@@ -9,8 +9,6 @@ environment:
 # Add regular dependencies here.
 dependencies:
   args: ^2.4.2
-  cli_util: ^0.4.0
-  # path: ^1.8.0
 
 dev_dependencies:
   lints: ^2.0.0
