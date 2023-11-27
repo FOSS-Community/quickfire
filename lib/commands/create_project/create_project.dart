@@ -3,6 +3,8 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
+import 'package:quickfire/commands/tools/choice_selctor.dart';
+import 'package:quickfire/commands/tools/cli_handler.dart';
 import 'package:quickfire/core/auth_handler.dart';
 import 'package:quickfire/core/command_handler.dart';
 import 'package:quickfire/core/main_handler.dart';
@@ -26,14 +28,25 @@ class CreateProject extends Command {
   // Handle Method
   @override
   Future<void> run() async {
+    // Create an instance of Cli handler
+    final cliHandler = CliHandler();
     String authOption = '';
     late bool stripeOption;
     late bool onBoardingOption;
     print('Enter the name of the project:');
     final String projectName = stdin.readLineSync() ?? '';
 
+    // Clears the screen
+    cliHandler.clearScreen();
+
+    // using bold cyan and red color...
+    cliHandler.printWithLoadingAmimation(
+        '\x1B[1;36mquickfire\x1B[0m is creating \x1B[32m$projectName\x1B[0m');
+
     if (projectName.isEmpty) {
-      print('Project name cannot be empty.');
+      cliHandler.stopLoadingAnimation();
+      cliHandler.clearScreen();
+      cliHandler.printErrorText('Project name cannot be empty');
       return;
     }
 
@@ -43,206 +56,114 @@ class CreateProject extends Command {
     );
 
     if (result.exitCode == 0) {
-      print('Flutter project $projectName created successfully');
+      cliHandler.clearScreen();
+      print(
+          '\x1B[1;32mFlutter project \x1B[1;36m$projectName \x1B[1;32mcreated successfully\x1B[0m');
     } else {
       print(result.exitCode);
-      print(
+      cliHandler.printErrorText(
           'Error creating Flutter project. Check the Flutter installation and try again.');
       print(result.stderr);
     }
 
-    print('Creating a feature first architecture for $projectName ...');
     await CommandHandler.createFeatureFirstArchitecture(projectName);
     await CommandHandler.createConstants(projectName);
 
-    // Ask for on boarding option
-    // // Create on boarding screens
-    String onBoardingChoice;
-    do {
-      stdout.write('Do you want an on-boarding feature? (Y/n) "');
-      final String stateInput = stdin.readLineSync() ?? '';
-      onBoardingChoice = stateInput;
-    } while (onBoardingChoice != 'y' &&
-        onBoardingChoice != 'n' &&
-        onBoardingChoice != 'Y' &&
-        onBoardingChoice != 'N');
-
-    // Handle user choice
-    switch (onBoardingChoice) {
-      case 'y':
-        onBoardingOption = true;
-
-        break;
-      case 'Y':
-        onBoardingOption = true;
-
-        break;
-      case 'n':
-        onBoardingOption = false;
-        break;
-      case 'N':
-        onBoardingOption = false;
-        break;
+    // On Boarding Feature
+    final onBoardingChoices = ['Yes', 'No'];
+    final onBoardingChoiceSelector = ChoiceSelector(onBoardingChoices);
+    cliHandler.clearScreen();
+    cliHandler.printBoltCyanText('Do you want an on-boarding feature?');
+    onBoardingChoiceSelector.printOptions();
+    onBoardingChoiceSelector.handleArrowKeys();
+    int onBoardingIndex = onBoardingChoiceSelector.selectedIndexForOptions;
+    if (onBoardingIndex == 0) {
+      onBoardingOption = true;
+    } else if (onBoardingIndex == 1) {
+      onBoardingOption = false;
     }
 
-    print('''
-
-Choose F for Firebase
-
-Choose A for Appwrite
-
-Choose N for No Auth Service...
-
-''');
-    String authChoice;
-    do {
-      stdout.write('Chose your choice "');
-      final String authInput = stdin.readLineSync() ?? '';
-      authChoice = authInput;
-    } while (authChoice != 'f' &&
-        authChoice != 'a' &&
-        authChoice != 'F' &&
-        authChoice != 'A' &&
-        authChoice != 'n' &&
-        authChoice != 'N');
-
-    // Handle user choice
-    switch (authChoice) {
-      case 'f':
-        print(
-            'Implementing Firebase Auth and Login screen for $projectName ....');
-        await AuthHandler.implementFirebase(projectName);
-        authOption = 'firebase';
-        if (onBoardingOption) {
-          await MainFileHandler.createFirebaseMainWithOnBoarding(projectName);
-          await OnBoarding.createOnBoardingWithAuth(projectName);
-        } else if (!onBoardingOption) {
-          await MainFileHandler.createFirebaseMainWithoutOnBoarding(
-              projectName);
-        }
-
-        break;
-      case 'F':
-        print(
-            'Implementing Firebase Auth and Login screen for$projectName ....');
-        await AuthHandler.implementFirebase(projectName);
-        authOption = 'firebase';
-        if (onBoardingOption) {
-          await MainFileHandler.createFirebaseMainWithOnBoarding(projectName);
-          await OnBoarding.createOnBoardingWithAuth(projectName);
-        } else if (!onBoardingOption) {
-          await MainFileHandler.createFirebaseMainWithoutOnBoarding(
-              projectName);
-        }
-
-        break;
-      case 'a':
-        print(
-            'Implementing Appwrite Auth and Login screen for$projectName ....');
-        await AuthHandler.implementAppwrite(projectName);
-        authOption = 'appwrite';
-        if (onBoardingOption) {
-          await MainFileHandler.createAppwriteMainWithOnBoarding(projectName);
-          await OnBoarding.createOnBoardingWithAuth(projectName);
-        } else if (!onBoardingOption) {
-          await MainFileHandler.createAppwriteMainWithoutOnBoarding(
-              projectName);
-        }
-
-        break;
-      case 'A':
-        print(
-            'Implementing Appwrite Auth and Login screen for$projectName ....');
-        await AuthHandler.implementAppwrite(projectName);
-        authOption = 'appwrite';
-        if (onBoardingOption) {
-          await MainFileHandler.createAppwriteMainWithOnBoarding(projectName);
-          await OnBoarding.createOnBoardingWithAuth(projectName);
-        } else if (!onBoardingOption) {
-          await MainFileHandler.createAppwriteMainWithoutOnBoarding(
-              projectName);
-        }
-
-        break;
-      case 'n':
-        // Create On boarding Screen without Auth Screen
-        OnBoarding.createOnBoardingWithoutAuth(projectName);
-        authOption = 'no';
-
-        break;
-      case 'N':
-        OnBoarding.createOnBoardingWithoutAuth(projectName);
-        authOption = 'no';
-        break;
+    cliHandler.clearScreen();
+    final authChoices = ['firebase', 'appwrite', 'noAuth'];
+    final authChoiceSelector = ChoiceSelector(authChoices);
+    cliHandler.clearScreen();
+    cliHandler.printBoltCyanText('Choose your Backend as a Service (BaaS)');
+    authChoiceSelector.printOptions();
+    authChoiceSelector.handleArrowKeys();
+    int authChoiceIndex = authChoiceSelector.selectedIndexForOptions;
+    if (authChoiceIndex == 0) {
+      cliHandler.printBoldGreenText(
+          'Implementing Firebase Auth and Login screen for $projectName ');
+      await AuthHandler.implementFirebase(projectName);
+      authOption = 'firebase';
+      if (onBoardingOption) {
+        await MainFileHandler.createFirebaseMainWithOnBoarding(projectName);
+        await OnBoarding.createOnBoardingWithAuth(projectName);
+      } else if (!onBoardingOption) {
+        await MainFileHandler.createFirebaseMainWithoutOnBoarding(projectName);
+      }
+    } else if (authChoiceIndex == 1) {
+      cliHandler.printBoldGreenText(
+          'Implementing Appwrite Auth and Login screen for $projectName ....');
+      await AuthHandler.implementAppwrite(projectName);
+      authOption = 'appwrite';
+      if (onBoardingOption) {
+        await MainFileHandler.createAppwriteMainWithOnBoarding(projectName);
+        await OnBoarding.createOnBoardingWithAuth(projectName);
+      } else if (!onBoardingOption) {
+        await MainFileHandler.createAppwriteMainWithoutOnBoarding(projectName);
+      }
+    } else if (authChoiceIndex == 2) {
+      cliHandler.printBoldGreenText(
+          'You have choosed no BaaS for your application...');
+      OnBoarding.createOnBoardingWithoutAuth(projectName);
+      authOption = 'no';
     }
 
     // Ask for FCM and local Notifications
 
     if (authOption == 'firebase') {
-      String stripeChoice;
-      do {
-        stdout.write(
-            'Do you need Firebase Cloud Messaging with Local Notification (Y/N) ? (Y/n) "');
-        final String stripeOption = stdin.readLineSync() ?? '';
-        stripeChoice = stripeOption;
-      } while (stripeChoice != 'y' &&
-          stripeChoice != 'n' &&
-          stripeChoice != 'Y' &&
-          stripeChoice != 'N');
-
-      // Handle user choice
-      switch (stripeChoice) {
-        case 'y':
-          await NotificationHandler.implementFirebaseNotification(projectName);
-          if (onBoardingOption) {
-            await MainFileHandler.createNotificationSystemMainWithOnboarding(
-                projectName);
-          } else if (onBoardingOption) {
-            await MainFileHandler.createNotficationSystemMainWithoutOnboarding(
-                projectName);
-          }
-          break;
-        case 'Y':
-          await NotificationHandler.implementFirebaseNotification(projectName);
-          if (onBoardingOption) {
-            await MainFileHandler.createNotificationSystemMainWithOnboarding(
-                projectName);
-          } else if (onBoardingOption) {
-            await MainFileHandler.createNotficationSystemMainWithoutOnboarding(
-                projectName);
-          }
-          break;
-        case 'n':
-          break;
-        case 'N':
-          break;
+      cliHandler.clearScreen();
+      final notificationOptions = ['Yes', 'No'];
+      final notificationChoiceSelector = ChoiceSelector(notificationOptions);
+      cliHandler.clearScreen();
+      cliHandler.printBoltCyanText(
+          'Do you want to implement Firebase Cloud Messaging with local notifications?');
+      notificationChoiceSelector.printOptions();
+      notificationChoiceSelector.handleArrowKeys();
+      int notificationChoiceIndex =
+          notificationChoiceSelector.selectedIndexForOptions;
+      if (notificationChoiceIndex == 0) {
+        await NotificationHandler.implementFirebaseNotification(projectName);
+        if (onBoardingOption) {
+          await MainFileHandler.createNotificationSystemMainWithOnboarding(
+              projectName);
+        } else if (onBoardingOption) {
+          await MainFileHandler.createNotficationSystemMainWithoutOnboarding(
+              projectName);
+        }
       }
     }
 
     // Ask for Stripe Payment Integration...
-    String stripeChoice;
-    do {
-      stdout.write('Do you need Strpe Payment Gateway? (Y/n) "');
-      final String stripeOption = stdin.readLineSync() ?? '';
-      stripeChoice = stripeOption;
-    } while (stripeChoice != 'y' &&
-        stripeChoice != 'n' &&
-        stripeChoice != 'Y' &&
-        stripeChoice != 'N');
-
-    // Handle user choice
-    switch (stripeChoice) {
-      case 'y':
-        await StripeHandler.implementStripe(projectName);
-
-        break;
-      case 'Y':
-        await StripeHandler.implementStripe(projectName);
-        break;
-      case 'n':
-        break;
-      case 'N':
-        break;
+    cliHandler.clearScreen();
+    final stripeChoices = ['Yes', 'No'];
+    final stripeChoiceSelector = ChoiceSelector(stripeChoices);
+    cliHandler.clearScreen();
+    cliHandler.printBoltCyanText('Do you want to integrate Stripe payment?');
+    stripeChoiceSelector.printOptions();
+    stripeChoiceSelector.handleArrowKeys();
+    int stripeChoiceIndex = stripeChoiceSelector.selectedIndexForOptions;
+    if (stripeChoiceIndex == 0) {
+      cliHandler
+          .printBoldGreenText('Integrating Stripe into your $projectName..');
+      await StripeHandler.implementStripe(projectName);
     }
+
+    cliHandler.clearScreen();
+
+    cliHandler.printBoldGreenText('$projectName created by Quickfire.');
+
+    cliHandler.stopLoadingAnimation();
   }
 }

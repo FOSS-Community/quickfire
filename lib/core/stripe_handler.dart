@@ -96,6 +96,5 @@ class MainActivity: FlutterFragmentActivity() {
 }
 ''');
 
-    print('Implemented Stripe SDK');
   }
 }

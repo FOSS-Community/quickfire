@@ -1,29 +1,40 @@
 import 'dart:io';
+
+import 'package:quickfire/commands/tools/cli_handler.dart';
+
 class CommandHandler {
   static Future<void> createFeatureFirstArchitecture(String projectName) async {
+    final cliHandler = CliHandler();
     int numOfFeatures;
     // move to the newly created project directory
     final Directory projectDirectory = Directory(projectName);
     if (!projectDirectory.existsSync()) {
-      print('Error: Project directory does not exist.');
+      cliHandler.printErrorText('Error: Project directory does not exist.');
       return;
     }
 
     Directory.current = projectDirectory.path;
     // Ask about number of features from user
-    print('Enter the number of features required in $projectName: ');
+    cliHandler.printBoltCyanText(
+        'Enter the number of features required in $projectName: (int)');
+
     final String numOfFeaturesString = stdin.readLineSync() ?? '';
+    cliHandler.eraseLastLine();
     numOfFeatures = int.parse(numOfFeaturesString);
     List featuresArray = [];
 
-    for (int i = 0; i < numOfFeatures;) {
-      print('Enter the name of feature $i : ');
+    for (int i = 1; i <= numOfFeatures;) {
+      cliHandler.printBoldGreenText('Enter the name of feature $i : ');
       String nameOfFeature = stdin.readLineSync() ?? '';
+      cliHandler.eraseLastLine();
+      cliHandler.eraseLastLine();
       featuresArray.add(nameOfFeature);
       i++;
     }
 
-    print('All of your features are : ');
+    cliHandler.clearScreen();
+
+    cliHandler.printBoltCyanText('All of your features are : ');
     print(featuresArray);
 
     // create 'features' folder inside 'projectName/lib'
@@ -172,12 +183,13 @@ class _NavigationScreenState extends State<NavigationScreen> {
       ['pub', 'add', 'bloc', 'flutter_bloc'],
     );
     if (addPackagesResult.exitCode != 0) {
-      print(
+      cliHandler.clearScreen();
+      cliHandler.printErrorText(
           'Error adding packages. Check your internet connection and try again.');
       print(addPackagesResult.stderr);
       return;
     }
-    print('added bloc dependency to project');
+    cliHandler.clearScreen();
 
     // Go inside every feature bloc folder
     for (String feature in featuresArray) {
@@ -241,11 +253,6 @@ final class ${featureName}Initial extends ${featureName}State {}
       }
     }
   }
-
-
-
-
-
 
   static Future<void> createConstants(String projectName) async {
     final constantsFolder = Directory('lib/constants');
