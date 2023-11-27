@@ -406,4 +406,71 @@ class MyApp extends StatelessWidget {
 
 ''');
   }
+
+  static Future<void> createNoAuthMainFileWithOnBoarding(
+      String projectName) async {
+    final File mainFile = File('lib/main.dart');
+    mainFile.writeAsStringSync('''
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:$projectName/features/onBoarding/ui/on_boarding_screen.dart';
+import 'package:$projectName/shared/nav_bar.dart';
+
+void main() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
+  runApp(ProviderScope(child: MyApp(hasSeenOnboarding: hasSeenOnboarding)));
+}
+
+class MyApp extends StatelessWidget {
+  final bool hasSeenOnboarding;
+  const MyApp({required this.hasSeenOnboarding, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: !hasSeenOnboarding
+          ? const OnBoardingScreen()
+          : const NavigationScreen(),
+    );
+  }
+}
+
+''');
+  }
+
+  static Future<void> createNoAuthMainFileWithoutOnBoarding(
+      String projectName) async {
+    final File mainFile = File('lib/main.dart');
+    mainFile.writeAsStringSync('''
+import 'package:flutter/material.dart';
+import 'package:$projectName/shared/nav_bar.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        useMaterial3: true,
+      ),
+      home: const NavigationScreen(),
+    );
+  }
+}
+
+''');
+  }
 }

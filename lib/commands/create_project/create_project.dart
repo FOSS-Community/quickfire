@@ -114,9 +114,17 @@ class CreateProject extends Command {
         await MainFileHandler.createAppwriteMainWithoutOnBoarding(projectName);
       }
     } else if (authChoiceIndex == 2) {
-      cliHandler.printBoldGreenText(
-          'You have choosed no BaaS for your application...');
-      OnBoarding.createOnBoardingWithoutAuth(projectName);
+      if (onBoardingOption) {
+        cliHandler.printBoldGreenText(
+            'You have choosed no BaaS for your application...');
+        await MainFileHandler.createNoAuthMainFileWithOnBoarding(projectName);
+        await OnBoarding.createOnBoardingWithoutAuth(projectName);
+      } else if (onBoardingOption) {
+        cliHandler.printBoldGreenText(
+            'You have choosed no BaaS for your application...');
+        await MainFileHandler.createNoAuthMainFileWithoutOnBoarding(
+            projectName);
+      }
       authOption = 'no';
     }
 

@@ -1,6 +1,6 @@
 name: quickfire
-description: A powerful flutter CLI tool to generate bloc based feature driven development.
-version: 1.0.0
+description: A powerful flutter CLI tool to speed up your development cycle with BLoC Feature drive approach, authentication, database, onboarding, UI components and Payments.
+version: 1.0.1
 repository: https://github.com/FOSS-Community/quickfire
 
 environment:

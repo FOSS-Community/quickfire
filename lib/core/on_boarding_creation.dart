@@ -236,7 +236,7 @@ class IntroPage3 extends StatelessWidget {
     if (!onBoardinScreenFile.existsSync()) {
       onBoardinScreenFile.createSync();
       onBoardinScreenFile.writeAsStringSync('''
-import 'package:$projectName/features/auth/ui/auth_screen.dart';
+import 'package:$projectName/shared/nav_bar.dart';
 import 'package:$projectName/features/onBoarding/ui/intro_page2.dart';
 import 'package:$projectName/features/onBoarding/ui/intro_page3.dart';
 import 'package:$projectName/features/onBoarding/ui/intro_page1.dart';
@@ -262,7 +262,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => const HomeScreen())); 
+            builder: (context) => const NavigationScreen())); 
   }
 
   @override
