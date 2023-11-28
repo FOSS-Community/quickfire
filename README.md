@@ -6,7 +6,9 @@ Quickfire is a powerful Dart CLI tool that supercharges your Flutter project set
 
 ### Documentation
 
-[hi](google.com)
+[See our documentation for better understanding](https://utkarshs-organization-1.gitbook.io/quickfire/)
+
+[Quickfire website](https://quickfire.framer.website/)
 
 
 
