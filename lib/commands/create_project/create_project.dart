@@ -171,6 +171,9 @@ class CreateProject extends Command {
     cliHandler.clearScreen();
 
     cliHandler.printBoldGreenText('$projectName created by Quickfire.');
+    cliHandler.printBoltCyanText('\$cd $projectName');
+    
+
 
     cliHandler.stopLoadingAnimation();
   }
