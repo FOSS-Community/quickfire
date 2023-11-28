@@ -126,7 +126,7 @@ class NotificationService {
 <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="$projectName"
-        android:name="{applicationName}" <-- add a dollar symbol before {applicationName} -->
+        android:name="\${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
