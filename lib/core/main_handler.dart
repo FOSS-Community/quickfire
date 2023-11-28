@@ -29,14 +29,14 @@ void main() async {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     print('Got a message whilst in the foreground!');
-    print('Message data: {message.data}'); // add dollar before {message.data}
+    print('Message data: \${message.data}');
     print(message.data['body']);
 
     NotificationService.showLocalNotification(message);
 
 
     if (message.notification != null) {
-      print('Message also contained a notification: {message.notification}'); // add dollar before {message.notification}
+      print('Message also contained a notification: \${message.notification}');
     }
     
   });
@@ -114,14 +114,14 @@ void main() async {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     print('Got a message whilst in the foreground!');
-    print('Message data: {message.data}'); // add dollar before {message.data}
+    print('Message data: \${message.data}');
     print(message.data['body']);
 
     NotificationService.showLocalNotification(message);
 
 
     if (message.notification != null) {
-      print('Message also contained a notification: {message.notification}'); // add dollar before {message.notification}
+      print('Message also contained a notification: \$+{message.notification}');
     }
     
   });

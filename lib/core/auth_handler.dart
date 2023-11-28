@@ -68,7 +68,7 @@ class AuthService extends ChangeNotifier {
   AuthStatus get status => _status;
   String? get username => _currentUser.name;
   String? get email => _currentUser.email;
-  String? get userid => _currentUser.id; // add dollar symbol before 'id'.
+  String? get userid => _currentUser.\$id;
 
   // Constructor
   AuthService() {
@@ -167,7 +167,7 @@ class AuthService extends ChangeNotifier {
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:label="<YOUR-APP-NAME>"
-        android:name="{applicationName}" <-- add dollar sign before {applicationName} -->
+        android:name="\${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity android:name="com.linusu.flutter_web_auth_2.CallbackActivity" android:exported="true">
       <intent-filter android:label="flutter_web_auth_2">
