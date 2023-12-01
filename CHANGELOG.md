@@ -1,3 +1,7 @@
+## 1.0.4
+
+- Fix: No need to add $ symbols manually
+
 ## 1.0.3
 
 - Fix: Notification Services 

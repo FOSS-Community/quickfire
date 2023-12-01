@@ -1,6 +1,6 @@
 name: quickfire
 description: A powerful flutter CLI tool to speed up your development cycle with BLoC Feature drive approach, authentication, database, onboarding, UI components and Payments.
-version: 1.0.3
+version: 1.0.4
 repository: https://github.com/FOSS-Community/quickfire
 
 environment:
@@ -9,6 +9,8 @@ environment:
 # Add regular dependencies here.
 dependencies:
   args: ^2.4.2
+  yaml: ^3.1.2
+  yaml_edit: ^2.1.1
 
 dev_dependencies:
   lints: ^2.0.0
