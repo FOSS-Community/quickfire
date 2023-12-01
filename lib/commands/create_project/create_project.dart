@@ -3,14 +3,14 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
-import 'package:quickfire/commands/tools/choice_selctor.dart';
-import 'package:quickfire/commands/tools/cli_handler.dart';
-import 'package:quickfire/core/auth_handler.dart';
-import 'package:quickfire/core/command_handler.dart';
-import 'package:quickfire/core/main_handler.dart';
-import 'package:quickfire/core/notification_handler.dart';
-import 'package:quickfire/core/on_boarding_creation.dart';
-import 'package:quickfire/core/stripe_handler.dart';
+import 'package:quickfire/tools/choice_selctor.dart';
+import 'package:quickfire/tools/cli_handler.dart';
+import 'package:quickfire/core/create_project/auth_handler.dart';
+import 'package:quickfire/core/create_project/command_handler.dart';
+import 'package:quickfire/core/create_project/main_handler.dart';
+import 'package:quickfire/core/create_project/notification_handler.dart';
+import 'package:quickfire/core/create_project/on_boarding_creation.dart';
+import 'package:quickfire/core/create_project/stripe_handler.dart';
 
 class CreateProject extends Command {
   // Command details

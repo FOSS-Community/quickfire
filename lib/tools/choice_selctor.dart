@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:quickfire/commands/tools/cli_handler.dart';
+import 'package:quickfire/tools/cli_handler.dart';
 
 class ChoiceSelector {
   List<String> options;
