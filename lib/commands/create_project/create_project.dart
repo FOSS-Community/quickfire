@@ -33,7 +33,9 @@ class CreateProject extends Command {
     String authOption = '';
     late bool stripeOption;
     late bool onBoardingOption;
-    print('Enter the name of the project:');
+    cliHandler.printBoltCyanText('Enter your organization name: ');
+    final String orgName = stdin.readLineSync() ?? '';
+    cliHandler.printBoltCyanText('Enter the name of the project: ');
     final String projectName = stdin.readLineSync() ?? '';
 
     // Clears the screen
@@ -49,10 +51,16 @@ class CreateProject extends Command {
       cliHandler.printErrorText('Project name cannot be empty');
       return;
     }
+    if (orgName.isEmpty) {
+      cliHandler.stopLoadingAnimation();
+      cliHandler.clearScreen();
+      cliHandler.printErrorText('Org name cannot be empty');
+      return;
+    }
 
     final ProcessResult result = await Process.run(
       'flutter',
-      ['create', projectName],
+      ['create', '--org', 'com.$orgName', projectName],
     );
 
     if (result.exitCode == 0) {
@@ -165,15 +173,16 @@ class CreateProject extends Command {
     if (stripeChoiceIndex == 0) {
       cliHandler
           .printBoldGreenText('Integrating Stripe into your $projectName..');
-      await StripeHandler.implementStripe(projectName);
+      await StripeHandler.implementStripe(
+        projectName: projectName,
+        orgName: orgName,
+      );
     }
 
     cliHandler.clearScreen();
 
     cliHandler.printBoldGreenText('$projectName created by Quickfire.');
     cliHandler.printBoltCyanText('\$cd $projectName');
-    
-
 
     cliHandler.stopLoadingAnimation();
   }

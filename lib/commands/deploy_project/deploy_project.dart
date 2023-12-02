@@ -18,5 +18,6 @@ class DeployProject extends Command {
         '\x1B[1;36mMake your app publish ready with quickfire \x1B[0m');
     final currentVersion = PubspecHandler.getVersion();
     PubspecHandler.updatePubspecValue('1.0.0+${currentVersion + 1}');
+    
   }
 }
