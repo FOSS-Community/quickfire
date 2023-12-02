@@ -1,10 +1,10 @@
 import 'dart:io';
 
 class StripeHandler {
-  static Future<void> implementStripe(String projectName) async {
+  static Future<void> implementStripe({required String projectName, required String orgName}) async {
     final File buildGradleFile = File('android/app/build.gradle');
     final File mainActivityFile = File(
-        'android/app/src/main/kotlin/com/example/$projectName/MainActivity.kt');
+        'android/app/src/main/kotlin/com/$orgName/$projectName/MainActivity.kt');
     final ProcessResult addStripeResult = await Process.run(
       'dart',
       ['pub', 'add', 'flutter_stripe'],
@@ -41,7 +41,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.example.$projectName"
+    namespace "com.$orgName.$projectName"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -60,7 +60,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.$projectName"
+        applicationId "com.$orgName.$projectName"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 21
@@ -87,7 +87,7 @@ dependencies {}
 ''');
 
     mainActivityFile.writeAsStringSync('''
-package com.example.$projectName
+package com.$orgName.$projectName
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterFragmentActivity

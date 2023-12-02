@@ -4,7 +4,7 @@ import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
 
 class PubspecHandler {
-  static void updatePubspecValue(String newValue) {
+  static Future<void> updatePubspecValue(String newValue) async {
     // Construct the path to pubspec.yaml
     final pubspecPath = 'pubspec.yaml';
 
