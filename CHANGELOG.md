@@ -1,3 +1,7 @@
+## 1.0.7
+
+- Changed Compile SDK Version to 34
+
 ## 1.0.6
 
 - Feat: Added Command to generate Debug SHA Keys.

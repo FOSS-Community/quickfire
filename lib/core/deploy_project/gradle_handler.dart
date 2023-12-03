@@ -1,6 +1,20 @@
 import 'dart:io';
 
 class GradleHandler {
+  static Future<void> updateCompileSdkVersion() async {
+    final File buildGradle = File('android/app/build.gradle');
+    String content = buildGradle.readAsStringSync();
+
+    String oldValue = 'compileSdkVersion flutter.compileSdkVersion';
+    String newValue = 'compileSdkVersion 34';
+
+    content = content.replaceAllMapped(
+      RegExp(oldValue),
+      (match) => newValue,
+    );
+    buildGradle.writeAsStringSync(content);
+  }
+
   static Future<void> referenceKeyStoreInGradle() async {
     final File buildGradle = File('android/app/build.gradle');
     String keystorePropertiesSnippet = '''
@@ -32,8 +46,9 @@ if (keystorePropertiesFile.exists()) {
   }
 
   static Future<void> updateBuildGradle() async {
-  File buildGradleFile = File('android/app/build.gradle'); // Update the path to your build.gradle file
-  String keystorePropertiesSnippet = '''
+    File buildGradleFile = File(
+        'android/app/build.gradle'); // Update the path to your build.gradle file
+    String keystorePropertiesSnippet = '''
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
@@ -50,25 +65,28 @@ if (keystorePropertiesFile.exists()) {
     
   ''';
 
-  try {
-    String contents = await buildGradleFile.readAsString();
+    try {
+      String contents = await buildGradleFile.readAsString();
 
-    // Find the position to replace the existing 'release' block in buildTypes
-    int releaseBlockStart = contents.indexOf('buildTypes {');
-    int releaseBlockEnd = contents.indexOf('}', releaseBlockStart);
+      // Find the position to replace the existing 'release' block in buildTypes
+      int releaseBlockStart = contents.indexOf('buildTypes {');
+      int releaseBlockEnd = contents.indexOf('}', releaseBlockStart);
 
-    if (releaseBlockStart != -1 && releaseBlockEnd != -1) {
-      String existingReleaseBlock = contents.substring(releaseBlockStart, releaseBlockEnd + 1);
-      String updatedContents = contents.replaceFirst(existingReleaseBlock, keystorePropertiesSnippet);
+      if (releaseBlockStart != -1 && releaseBlockEnd != -1) {
+        String existingReleaseBlock =
+            contents.substring(releaseBlockStart, releaseBlockEnd + 1);
+        String updatedContents = contents.replaceFirst(
+            existingReleaseBlock, keystorePropertiesSnippet);
 
-      // Write the updated contents back to the file
-      await buildGradleFile.writeAsString(updatedContents);
-      print('Build.gradle file updated successfully.');
-    } else {
-      print('Error: Could not find the "buildTypes {" block in build.gradle.');
+        // Write the updated contents back to the file
+        await buildGradleFile.writeAsString(updatedContents);
+        print('Build.gradle file updated successfully.');
+      } else {
+        print(
+            'Error: Could not find the "buildTypes {" block in build.gradle.');
+      }
+    } catch (e) {
+      print('Error reading/writing build.gradle file: $e');
     }
-  } catch (e) {
-    print('Error reading/writing build.gradle file: $e');
   }
-}
 }
