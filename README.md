@@ -1,4 +1,7 @@
-# Quickfire 🔥 : auth, Bloc, onboarding, and Play Store deployment, effortlessly woven for an elevated development experience.
+# Quickfire 🔥 : auth, Bloc, onboarding, Payment, UI and Play Store deployment, effortlessly woven for an elevated development experience.
+
+Tested on Android.
+IOS?? Try and tell us :p
 
 ---
 Craft a feature-rich Flutter project with auth, Bloc architecture, and onboarding screens, effortlessly deployable on the Play Store without manual hassles!

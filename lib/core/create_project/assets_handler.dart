@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:yaml/yaml.dart';
 
 class AssetsHandler {
   static Future<void> handleAssets() async {
