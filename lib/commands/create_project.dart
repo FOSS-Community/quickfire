@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:quickfire/core/create_project/assets_handler.dart';
+import 'package:quickfire/core/deploy_project/gradle_handler.dart';
 import 'package:quickfire/tools/choice_selctor.dart';
 import 'package:quickfire/tools/cli_handler.dart';
 import 'package:quickfire/core/create_project/auth_handler.dart';
@@ -180,6 +181,7 @@ class CreateProject extends Command {
       );
     }
 
+    await GradleHandler.updateCompileSdkVersion();
     await AssetsHandler.handleAssets();
     AssetsHandler.replaceAssetsBlock();
 

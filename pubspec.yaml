@@ -1,6 +1,6 @@
 name: quickfire
 description: auth, Bloc, onboarding, Payment, UI and Play Store deployment, effortlessly woven for an elevated development experience.
-version: 1.0.6
+version: 1.0.7
 repository: https://github.com/FOSS-Community/quickfire
 
 environment:
