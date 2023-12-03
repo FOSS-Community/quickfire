@@ -20,8 +20,8 @@ class KeystoreHandler {
     cliHandler.eraseLastLine();
 
     // Construct the keytool command
-    String command = '''keytool -genkey -v -keystore %userprofile%\
-        $jksName-keystore.jks ^-storetype JKS -keyalg RSA -keysize 2048 -validity 10000 ^-alias $aliasName''';
+    String command =
+        '''keytool -genkey -v -keystore %userprofile%\${$jksName}-keystore.jks ^-storetype JKS -keyalg RSA -keysize 2048 -validity 10000 ^-alias $aliasName''';
 
     // Run the keytool command using Process.start
     Process process = await Process.start(

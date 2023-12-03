@@ -14,7 +14,6 @@ class PublishProject extends Command {
   @override
   Future<void> run() async {
     final cliHandler = CliHandler();
-    String os = '';
     cliHandler.clearScreen();
     cliHandler
         .printBoltCyanText('Making your app publish ready with quickfire :');
@@ -28,17 +27,14 @@ class PublishProject extends Command {
     int osChoiceIndex = osChoiceSelector.selectedIndexForOptions;
     // windows
     if (osChoiceIndex == 0) {
-      os = 'windows';
       KeystoreHandler.generateWndowsKeystore();
     }
     // linux
     else if (osChoiceIndex == 1) {
-      os = 'linux';
       KeystoreHandler.generateLinuxMacUploadKeystore();
     }
     // mac
     else if (osChoiceIndex == 2) {
-      os = 'mac';
       KeystoreHandler.generateLinuxMacUploadKeystore();
     }
 
