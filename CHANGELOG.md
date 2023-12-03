@@ -1,3 +1,7 @@
+## 1.0.6
+
+- Feat: Added Command to generate Debug SHA Keys.
+
 ## 1.0.5
 
 - Feat: Added Deployment Support to Google Play Store.
