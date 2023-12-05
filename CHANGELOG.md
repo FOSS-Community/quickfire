@@ -1,3 +1,8 @@
+## 1.0.8
+
+- Fix: Widgets not initialized when no authentication is selected
+
+
 ## 1.0.7
 
 - Changed Compile SDK Version to 34
