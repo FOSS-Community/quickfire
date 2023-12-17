@@ -166,7 +166,7 @@ class AuthService extends ChangeNotifier {
     androidManifest.writeAsStringSync('''
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="<YOUR-APP-NAME>"
+        android:label="\$$projectName"
         android:name="\${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity android:name="com.linusu.flutter_web_auth_2.CallbackActivity" android:exported="true">
