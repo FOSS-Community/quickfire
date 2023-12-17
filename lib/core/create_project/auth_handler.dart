@@ -80,7 +80,7 @@ class AuthService extends ChangeNotifier {
   init() {
     client
         .setEndpoint('replace_with_your_endpoint')
-        .setProject('replace_with_project_name')
+        .setProject('replace_with_project_id')
         .setSelfSigned();
     account = Account(client);
   }
