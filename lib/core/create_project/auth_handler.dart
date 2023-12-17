@@ -1,8 +1,7 @@
 import 'dart:io';
 
 class AuthHandler {
-
-    static Future<void> implementAppwrite(String projectName) async {
+  static Future<void> implementAppwrite(String projectName) async {
     // Import appwrite sdk
     final ProcessResult addPackagesResult = await Process.run(
       'dart',
@@ -277,11 +276,14 @@ class MyApp extends StatelessWidget {
       authScreen.writeAsStringSync('''
 import 'package:flutter/material.dart';
 import 'package:appwrite/models.dart' as models;
+import 'package:$projectName/constants/dimensions.dart';
 import 'package:$projectName/features/auth/ui/login_screen.dart';
 import 'package:$projectName/features/auth/ui/register_screen.dart';
+import 'package:$projectName/shared/custom_button.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
+  
 
   @override
   State<AuthScreen> createState() => _AuthScreenState();
@@ -295,38 +297,39 @@ class _AuthScreenState extends State<AuthScreen> {
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const RegisterScreen()));
-              },
-              child: const Text('Sign up'),
+            ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset('assets/img/logo.png',
+                    width: getScreenWidth(context) * 0.7)),
+            SizedBox(height: getScreenheight(context) * 0.02),
+            const Text(
+              'Made with quickfire',
+              style: TextStyle(fontWeight: FontWeight.w800),
             ),
-            TextButton(
-              onPressed: () {},
-              child: const Text('Continue with phone number'),
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text('Continue with Google'),
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text('Continue with Facebook'),
-            ),
-            TextButton(
-                onPressed: () {
+            SizedBox(height: getScreenheight(context) * 0.13),
+            CustomButton(
+                text: 'Sign up',
+                function: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RegisterScreen()));
+                }),
+            CustomButton(text: 'Continue with Phone number', function: () {}),
+            CustomButton(text: 'Continue with Google', function: () {}),
+            CustomButton(text: 'Continue with Facebook', function: () {}),
+            CustomButton(
+                text: 'Login',
+                function: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const LogInScreen(),
                     ),
                   );
-                },
-                child: const Text('Login'))
+                }),
           ],
         ),
       ),
@@ -346,7 +349,9 @@ class _AuthScreenState extends State<AuthScreen> {
 import 'package:flutter/material.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:$projectName/features/auth/service/auth_status.dart'; // service/auth_status.dart
-import 'package:provider/provider.dart'; 
+import 'package:provider/provider.dart';
+import 'package:$projectName/shared/custom_button.dart';
+import 'package:$projectName/shared/custom_text_field.dart';
 import 'package:$projectName/shared/nav_bar.dart';
 
 class LogInScreen extends StatefulWidget {
@@ -385,8 +390,8 @@ class _LogInScreenState extends State<LogInScreen> {
         password: _passwordController.text,
       );
       Navigator.pop(context);
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const NavigationScreen()));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const NavigationScreen()));
     } on AppwriteException catch (e) {
       Navigator.pop(context);
       showAlert(title: 'Login failed', text: e.message.toString());
@@ -419,16 +424,18 @@ class _LogInScreenState extends State<LogInScreen> {
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          TextField(
-            decoration: const InputDecoration(label: Text('Enter your email')),
-            controller: _emailController,
-          ),
-          TextField(
-            decoration:
-                const InputDecoration(label: Text('Enter your password')),
+          CustomTextField(
+              controller: _emailController, label: 'Enter your email'),
+          CustomTextField(
             controller: _passwordController,
+            label: 'Enter your pssword',
+            obscure: true,
           ),
-          TextButton(onPressed: signIn, child: const Text('Login'))
+          CustomButton(
+              text: 'Sign in',
+              function: () {
+                signIn();
+              })
         ],
       )),
     );
@@ -447,6 +454,8 @@ class _LogInScreenState extends State<LogInScreen> {
 import 'package:flutter/material.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:provider/provider.dart';
+import 'package:$projectName/shared/custom_button.dart';
+import 'package:$projectName/shared/custom_text_field.dart';
 import 'package:$projectName/shared/nav_bar.dart';
 import 'package:$projectName/features/auth/service/auth_status.dart';
 
@@ -523,19 +532,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextField(
-            controller: _nameController,
-            decoration: const InputDecoration(label: Text('Enter your name!')),
-          ),
-          TextField(
-            controller: _emailController,
-            decoration: const InputDecoration(label: Text('Enter your email!')),
-          ),
-          TextField(
+          CustomTextField(
+              controller: _nameController, label: 'Enter your name!'),
+          CustomTextField(
+              controller: _emailController, label: 'Enter your email!'),
+          CustomTextField(
             controller: _passwordController,
-            decoration: const InputDecoration(label: Text('Enter your password!')),
+            label: 'Enter your password!',
+            obscure: true,
           ),
-          TextButton(onPressed: createAccount, child: const Text('Create new account!'))
+          CustomButton(
+              text: 'Create new account!',
+              function: () {
+                createAccount();
+              }),
         ],
       )),
     );
@@ -545,10 +555,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 ''');
   }
 
-  
-
-
-    static Future<void> implementFirebase(String projectName) async {
+  static Future<void> implementFirebase(String projectName) async {
     // Import firebase core and firebase auth
     final ProcessResult addFirebaseCore =
         await Process.run('dart', ['pub', 'add', 'firebase_core']);
@@ -593,6 +600,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       loginScreen.writeAsStringSync('''
 import 'package:flutter/material.dart';
 import 'package:$projectName/features/auth/service/auth_service.dart';
+import 'package:$projectName/shared/custom_button.dart';
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
 
@@ -605,12 +613,11 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: TextButton(
-            onPressed: () {
-              AuthService().continueWithGoogle(context);
-            },
-            child: const Text('Continue with google!')),
-      ),
+        child: CustomButton(
+                text: 'Continue with google',
+                function: () {
+	                AuthService().continueWithGoogle(context);
+      }),
     );
   }
 }
@@ -666,6 +673,5 @@ class AuthService {
 
 ''');
     }
-
   }
 }

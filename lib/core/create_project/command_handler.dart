@@ -134,6 +134,138 @@ class _NavigationScreenState extends State<NavigationScreen> {
 ''', mode: FileMode.append);
     }
 
+    // create custom_button.dart inside shared folder
+
+    final File customButtonFile = File('lib/shared/custom_button.dart');
+    if (!customButtonFile.existsSync()) {
+      customButtonFile.createSync();
+      customButtonFile.writeAsStringSync('''
+
+import 'package:flutter/material.dart';
+import 'package:$projectName/constants/dimensions.dart';
+
+class CustomButton extends StatefulWidget {
+  final String text;
+  final VoidCallback function;
+  final bool isAsync;
+  const CustomButton({
+    this.isAsync = false,
+    required this.text,
+    required this.function,
+    super.key,
+  });
+
+  @override
+  State<CustomButton> createState() => _CustomButtonState();
+}
+
+class _CustomButtonState extends State<CustomButton> {
+  bool isTapped = false;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) {
+        setState(() {
+          isTapped = true;
+        });
+      },
+      onTapUp: (_) {
+        setState(() {
+          isTapped = false;
+        });
+        widget.function();
+      },
+      onTapCancel: () {
+        setState(() {
+          isTapped = false;
+        });
+      },
+      child: AnimatedContainer(
+        width: getScreenWidth(context),
+        margin: EdgeInsets.symmetric(
+          horizontal: getScreenWidth(context) * (isTapped ? 0.1 : 0.05),
+          vertical: getScreenWidth(context) * 0.02,
+        ),
+        duration: const Duration(milliseconds: 100),
+        decoration: BoxDecoration(
+            color: Colors.black, borderRadius: BorderRadius.circular(15)),
+        padding: EdgeInsets.symmetric(
+          vertical: getScreenWidth(context) * 0.035,
+        ),
+        child: Center(
+          child: Text(
+            widget.text,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+''');
+    }
+
+    // create custom text field
+    final customTextField = File('lib/shared/custom_text_field.dart');
+    if (!customTextField.existsSync()) {
+      customTextField.createSync();
+      customTextField.writeAsStringSync('''
+import 'package:flutter/material.dart';
+import 'package:$projectName/constants/dimensions.dart';
+
+class CustomTextField extends StatefulWidget {
+  final TextEditingController controller;
+  final String label;
+  final bool obscure;
+  const CustomTextField({
+    this.obscure = false,
+    required this.controller,
+    required this.label,
+    super.key,
+  });
+
+  @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: getScreenWidth(context) * 0.05,
+        vertical: getScreenWidth(context) * 0.04,
+      ),
+      child: SizedBox(
+        child: TextField(
+          obscureText: widget.obscure,
+          controller: widget.controller,
+          style: const TextStyle(color: Colors.black),
+          decoration: InputDecoration(
+              enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.white),
+                  borderRadius: BorderRadius.circular(8)),
+              filled: true,
+              labelText: widget.label,
+              fillColor: const Color.fromARGB(255, 247, 247, 247),
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Colors.white))),
+        ),
+      ),
+    );
+  }
+}
+
+
+''');
+    }
+
     for (String feature in featuresArray) {
       // make the first letter of feature capital
       String cFeature = feature[0].toUpperCase() + feature.substring(1);
