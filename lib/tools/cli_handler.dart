@@ -21,11 +21,12 @@ class CliHandler {
   }
 
   void stopLoadingAnimation() {
-  timer.cancel();
-  stdout.write('\r'); // Move the cursor to the beginning of the line
-  stdout.write(' ' * (animationFrames[frameIndex].length + 1)); // Clear the line
-  stdout.write('\r'); // Move the cursor back to the beginning of the line
-  print(''); // Move to the next line
+    timer.cancel();
+    stdout.write('\r'); // Move the cursor to the beginning of the line
+    stdout.write(
+        ' ' * (animationFrames[frameIndex].length + 1)); // Clear the line
+    stdout.write('\r'); // Move the cursor back to the beginning of the line
+    print(''); // Move to the next line
   }
 
   void eraseLastLine() {
@@ -49,5 +50,4 @@ class CliHandler {
   void printBoltCyanText(String message) {
     print('\x1B[1;36m$message\x1B[0m ');
   }
-
 }

@@ -3,7 +3,7 @@ import 'dart:io';
 class SHAHandler {
   static Future<void> generateWindowsSHA() async {
     String command =
-       'keytool -list -v -keystore "\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android';
+        'keytool -list -v -keystore "\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android';
 
     // Start the process
     Process process = await Process.start(

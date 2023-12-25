@@ -36,7 +36,6 @@ assets:
 
       // Write the modified content back to the file
       file.writeAsStringSync(content);
-
     } catch (e) {
       print('Error: $e');
     }
