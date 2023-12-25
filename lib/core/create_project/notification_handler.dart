@@ -169,6 +169,5 @@ class NotificationService {
 </manifest>
 
 ''');
-
   }
 }

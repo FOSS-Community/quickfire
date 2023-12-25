@@ -25,8 +25,7 @@ class BuildProject extends Command {
       ['build', 'appbundle'],
     );
     if (buildAppBundle.exitCode != 0) {
-      print(
-          'Error building appbundle!');
+      print('Error building appbundle!');
       print(buildAppBundle.stderr);
       return;
     }

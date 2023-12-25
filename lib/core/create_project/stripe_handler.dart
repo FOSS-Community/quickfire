@@ -1,7 +1,8 @@
 import 'dart:io';
 
 class StripeHandler {
-  static Future<void> implementStripe({required String projectName, required String orgName}) async {
+  static Future<void> implementStripe(
+      {required String projectName, required String orgName}) async {
     final File buildGradleFile = File('android/app/build.gradle');
     final File mainActivityFile = File(
         'android/app/src/main/kotlin/com/$orgName/$projectName/MainActivity.kt');
@@ -95,6 +96,5 @@ import io.flutter.embedding.android.FlutterFragmentActivity
 class MainActivity: FlutterFragmentActivity() {
 }
 ''');
-
   }
 }
